@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     UpdateData() {
-      this.axios.post("http://devmohamedgaber-001-site1.gtempurl.com/ui/getstatus.php").then((res) => {
+      this.axios.post("https://devmohamedgaber-001-site1.gtempurl.com/ui/getstatus.php").then((res) => {
         console.log(res);
         this.boardNumber = res.data.info['boardNumber']
         this.isActive = res.data.isActive
@@ -98,14 +98,14 @@ export default {
       var params = new URLSearchParams();
       params.append('port', port);
       params.append('state', state ? 1 : 0);
-      this.axios.post('http://devmohamedgaber-001-site1.gtempurl.com/ui/updatePinState.php', params);
+      this.axios.post('https://devmohamedgaber-001-site1.gtempurl.com/ui/updatePinState.php', params);
     },
     ConfirmCreatingNewItem() {
       var params = new URLSearchParams();
       params.append('name', this.namevalue);
       params.append('port', this.portvalue);
       params.append('state', this.statevalue ? 1 : 0);
-      this.axios.post('http://devmohamedgaber-001-site1.gtempurl.com/ui/addNewEntity.php', params).then(() => {
+      this.axios.post('https://devmohamedgaber-001-site1.gtempurl.com/ui/addNewEntity.php', params).then(() => {
         this.UpdateData();
         this.showModal = false;
       });
@@ -113,7 +113,7 @@ export default {
     DeletePort(portNumber) {
       var params = new URLSearchParams();
       params.append('port', portNumber);
-      this.axios.post('http://devmohamedgaber-001-site1.gtempurl.com/ui/deleteport.php', params).then(() => {
+      this.axios.post('https://devmohamedgaber-001-site1.gtempurl.com/ui/deleteport.php', params).then(() => {
         this.UpdateData();
       });
       
