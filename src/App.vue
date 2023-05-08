@@ -97,14 +97,14 @@ export default {
     updateOnClick(port, state) {
       var params = new URLSearchParams();
       params.append('port', port);
-      params.append('state', state ? 0 : 1);
+      params.append('state', state ? 1 : 0);
       this.axios.post('https://devmohamedgaber-001-site1.atempurl.com/ui/updatePinState.php', params);
     },
     ConfirmCreatingNewItem() {
       var params = new URLSearchParams();
       params.append('name', this.namevalue);
       params.append('port', this.portvalue);
-      params.append('state', this.statevalue ? 0 : 1);
+      params.append('state', this.statevalue ? 1 : 0);
       this.axios.post('https://devmohamedgaber-001-site1.atempurl.com/ui/addNewEntity.php', params).then(() => {
         this.UpdateData();
         this.showModal = false;
