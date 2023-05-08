@@ -79,7 +79,7 @@ export default {
   },
   methods: {
     UpdateData() {
-      this.axios.post("https://devmohamedgaber-001-site1.gtempurl.com/ui/getstatus.php").then((res) => {
+      this.axios.post("https://devmohamedgaber-001-site1.atempurl.com/ui/getstatus.php").then((res) => {
         console.log(res);
         this.boardNumber = res.data.info['boardNumber']
         this.isActive = res.data.isActive
