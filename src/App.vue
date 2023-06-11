@@ -15,26 +15,33 @@
       <!-- List Box -->
       <n-gi span="4 600:3">
         <n-card title="Entities List">
-        <n-list v-if="list.length > 0">
+        <n-list hoverable v-if="list.length > 0">
           <n-list-item v-for="item in list" :key="item['id']">
-            <n-card :title="item['name']">
-              <p>Connected to Port: {{ item['port'] }}</p>
-              <p>You can control this item's state from here 
+            <n-thing :title="item['name']" content-style="margin-top: 10px;">
+              <template #description>
+                <n-space size="small" style="margin-top: 4px">
+                  <n-tag :bordered="false" type="info" size="small">
+                    Port {{ item['port'] }}
+                  </n-tag>
+                </n-space>
+                <p>You can control this item's state from here 
                 <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
               </p>
-              <n-space v-if="item['timer'] != null">
+              </template>
+              <n-list v-if="item['timers'] != null">
                 <h3>Timers List</h3>
-                <p>Timer is set to turn 
-                  <span v-if="item['timer'].state == 1" class="green">On</span>
-                  <span v-else>Off</span>, at {{ item['timer'].executionDate }}
+                <n-list-item v-for="(timer, index) in item['timers']" :key="index">
+                  Timer is set to turn 
+                  <span v-if="item['timers'].state == 1" class="green">On</span>
+                  <span v-else>Off</span>, at {{ item['timers'].executionDate }}
                   <n-button secondary type="warning"> Remove Timer </n-button>
-                </p>
-              </n-space>
+                </n-list-item>
+              </n-list>
               <n-space>
                 <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
                 <n-button type="info" @click="showTimerModal = true"> Set Timer </n-button>
               </n-space>
-            </n-card>
+            </n-thing>
           </n-list-item>
         </n-list>
         <p v-else>No Entities Registered</p>
@@ -106,7 +113,7 @@ export default {
           res.data.timers.forEach(timer => {
             if(timer['port'] == element['port'])
             {
-              element['timer'] = timer;
+              element['timers'].append(timer);
             }
           });
         });
