@@ -26,7 +26,7 @@
                 Timer is set to turn 
                 <span v-if="item['timer'].state == 1">On</span>
                 <span v-else>Off</span>
-                on {{ item['timer'].executionDate }}
+                , at {{ item['timer'].executionDate }}
               </p>
               <n-space>
                 <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
