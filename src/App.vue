@@ -24,9 +24,9 @@
               </p>
               <p v-if="item['timer'] != null">
                 Timer is set to turn 
-                <span v-if="item['timer'].state == 1">On</span>
-                <span v-else>Off</span>
-                , at {{ item['timer'].executionDate }}
+                <span v-if="item['timer'].state == 1" class="green">On</span>
+                <span v-else>Off</span>, at {{ item['timer'].executionDate }}
+                <n-button type="warning"> Remove Timer </n-button>
               </p>
               <n-space>
                 <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
