@@ -93,7 +93,7 @@ export default {
             countedElements++;
           }
           element['state'] = element['state'] == 1 ? true : false;
-          res.data.timers.forEach(time => {
+          res.data.timers.forEach(timer => {
             if(timer['port'] == element['port'])
             {
               Object.assign(element, {timer: timer});
