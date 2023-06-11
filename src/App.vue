@@ -96,7 +96,7 @@ export default {
           res.data.timers.forEach(time => {
             if(timer['port'] == element['port'])
             {
-              element['timer'] = timer;
+              Object.assign(element, {timer: timer});
             }
           });
         });
