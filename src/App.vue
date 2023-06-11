@@ -24,7 +24,8 @@
               </p>
               <n-space>
                 <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
-                <n-button type="info" @click="showTimerModal = true" v-if="item['timer'] == null"> SetTimer </n-button>
+                <n-button type="info" @click="showTimerModal = true" v-if="item['timer'] == null"> Set Timer </n-button>
+                <n-button type="warning" @click="showTimerModal = true" v-else> Remove Timer </n-button>
               </n-space>
             </n-card>
           </n-list-item>
