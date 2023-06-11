@@ -22,8 +22,10 @@
               <p>You can control this item's state from here 
                 <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
               </p>
-              <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
-              <n-button type="info" @click="showTimerModal = true" v-if="item['timer'] != null"> SetTimer </n-button>
+              <n-space>
+                <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
+                <n-button type="info" @click="showTimerModal = true" v-if="item['timer'] == null"> SetTimer </n-button>
+              </n-space>
             </n-card>
           </n-list-item>
         </n-list>
