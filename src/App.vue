@@ -110,14 +110,13 @@ export default {
             countedElements++;
           }
           element['state'] = element['state'] == 1 ? true : false;
-          timers = [];
+          element['timers'] = [];
           res.data.timers.forEach(timer => {
             if(timer['port'] == element['port'])
             {
-              timers.push(timer);
+              element['timers'].push(timer);
             }
           });
-          element['timers'] = timers;
         });
         this.list = res.data.entities
       });
