@@ -23,7 +23,7 @@
                 <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
               </p>
               <p v-if="item['timer'] == null">
-                Timer is set to turn {{ item.timer["state"] }} on {{ item.timer["executionDate"] }}
+                Timer is set to turn {{ item['timer'].state }} on {{ item.timer["executionDate"] }}
               </p>
               <n-space>
                 <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
