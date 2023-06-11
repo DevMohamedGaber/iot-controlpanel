@@ -22,7 +22,7 @@
               <p>You can control this item's state from here 
                 <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
               </p>
-              <p v-if="item['timer'] == null">
+              <p v-if="item['timer'] != null">
                 Timer is set to turn {{ item['timer'].state }} on {{ item.timer["executionDate"] }}
               </p>
               <n-space>
