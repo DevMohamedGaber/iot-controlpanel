@@ -23,6 +23,7 @@
                 <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
               </p>
               <n-space v-if="item['timer'] != null">
+                <h3>Timers List</h3>
                 <p>Timer is set to turn 
                   <span v-if="item['timer'].state == 1" class="green">On</span>
                   <span v-else>Off</span>, at {{ item['timer'].executionDate }}
