@@ -7,8 +7,6 @@
                     <p>You can control this item's state from here 
                         <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
                     </p>
-                    
-                    
                 </n-card>
             </n-list-item>
         </n-list>
@@ -32,6 +30,7 @@ import { ref } from 'vue'
                         countedElements++;
                     }
                     element['state'] = element['state'] == 1 ? true : false;
+                    
                 });
                 this.list = res.data.entities
             });

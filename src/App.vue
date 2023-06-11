@@ -23,6 +23,7 @@
                 <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
               </p>
               <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
+              <n-button type="info" @click="showTimerModal = true" v-if="item['timer'] != null"> SetTimer </n-button>
             </n-card>
           </n-list-item>
         </n-list>
@@ -60,6 +61,7 @@ export default {
       list: ref([]),
       // creatw
       showModal: ref(false),
+      showTimerModal: ref(false),
       options: ref([]),
       optionsRaw: ref([2, 4, 5, 12, 13, 14, 15, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35]),
       portvalue: ref(2),
@@ -84,12 +86,19 @@ export default {
         this.boardNumber = res.data.info['boardNumber']
         this.isActive = res.data.isActive
         let countedElements = 1;
+
         res.data.entities.forEach(element => {
           if(element['name'] == "") {
             element['name'] = "Item " + countedElements;
             countedElements++;
           }
           element['state'] = element['state'] == 1 ? true : false;
+          res.data.timers.forEach(time => {
+            if(timer['port'] == element['port'])
+            {
+              element['timer'] = timer;
+            }
+          });
         });
         this.list = res.data.entities
       });
