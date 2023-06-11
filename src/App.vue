@@ -28,7 +28,7 @@
                 <n-switch v-model:value="item['state']" @update:value="updateOnClick(item['port'], item['state'])"/>
               </p>
               </template>
-              <n-list v-if="item['timers'] != null">
+              <n-list v-if="item.timers.length > 0">
                 <h3>Timers List</h3>
                 <n-list-item v-for="(timer, index) in item['timers']" :key="index">
                   Timer is set to turn 
@@ -110,12 +110,14 @@ export default {
             countedElements++;
           }
           element['state'] = element['state'] == 1 ? true : false;
+          timers = [];
           res.data.timers.forEach(timer => {
             if(timer['port'] == element['port'])
             {
-              element['timers'].append(timer);
+              timers.push(timer);
             }
           });
+          element['timers'] = timers;
         });
         this.list = res.data.entities
       });
