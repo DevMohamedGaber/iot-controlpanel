@@ -42,7 +42,7 @@
               </n-list>
               <n-space>
                 <n-button type="error" @click="DeletePort(item['port'])"> Delete </n-button>
-                <n-button type="info" @click="showTimerModal = true"> Set Timer </n-button>
+                <n-button type="info" @click="ShowSetTimerForm(item['port'])"> Set Timer </n-button>
               </n-space>
             </n-thing>
           </n-list-item>
@@ -65,6 +65,27 @@
         <n-button type="info" @click="ConfirmCreatingNewItem"> Create New Entity</n-button>
       </n-card>
     </n-modal>
+    <!-- CAdd Timer Model -->
+    <n-modal v-model:show="showTimerModal" block-scroll="false"
+    :mask-closable="false"
+      positive-text="Confirm"
+      negative-text="Cancel">
+      <n-card style="width: 800px" :title="'Add Timer on port ' + timerPort" :bordered="false" size="huge" role="dialog" aria-modal="true">
+        <h4>please select the state of this Port
+          <n-switch v-model:value="timerState"/>
+        </h4>
+        <n-grid cols="2" responsive="screen" item-responsive>
+          <n-gi span="2 m:1">
+            <h5>please Pick date and time</h5>
+            <n-time-picker v-model:formatted-value="timerTime" value-format="h:mm:ss"/>
+          </n-gi>
+          <n-gi span="2 m:1">
+            <n-date-picker panel type="date" value-format="yyyy-MM-dd" v-model:formatted-value="timerDate"/>
+          </n-gi>
+        </n-grid>
+        <n-button type="info" @click="ScheduleTimer">Schedule Timer</n-button>
+      </n-card>
+    </n-modal>
   </div>
 </template>
 
@@ -75,23 +96,34 @@ import { ref } from 'vue'
 export default {
   setup() {
     return {
+      serverURL: ref('https://devmohamedgaber-001-site1.atempurl.com/'),
       timer: ref(''),
+      updateInterval: ref(2000),
       boardNumber: ref(0),
       isActive: ref(false),
       list: ref([]),
-      // creatw
+      // create modal
       showModal: ref(false),
-      showTimerModal: ref(false),
       options: ref([]),
       optionsRaw: ref([2, 4, 5, 12, 13, 14, 15, 18, 19, 21, 22, 23, 25, 26, 27, 32, 33, 34, 35]),
       portvalue: ref(2),
       statevalue: ref(true),
-      namevalue: ref('')
+      namevalue: ref(''),
+      // timer modal
+      timerDateOptions: ref({ 
+        timeZone: 'America/Los_Angeles',
+        hour12: false,
+      }),
+      showTimerModal: ref(false),
+      timerPort: ref(0),
+      timerState: ref(1),
+      timerDate: ref(null),
+      timerTime: ref(null),
     };
   },
   mounted() {
     this.UpdateData();
-    this.timer = setInterval(this.UpdateData, 5000);
+    this.timer = setInterval(this.UpdateData, this.updateInterval);
     for(var i = 0; i < this.optionsRaw.length; i++) {
       this.options[i] = {
         label: "Port " + this.optionsRaw[i],
@@ -101,8 +133,8 @@ export default {
   },
   methods: {
     UpdateData() {
-      this.axios.post("https://devmohamedgaber-001-site1.atempurl.com/ui/getstatus.php").then((res) => {
-        console.log(res);
+      this.axios.post(this.serverURL + "ui/getstatus.php").then((res) => {
+        //console.log(res);
         this.boardNumber = res.data.info['boardNumber']
         this.isActive = res.data.isActive
         let countedElements = 1;
@@ -128,25 +160,50 @@ export default {
       var params = new URLSearchParams();
       params.append('port', port);
       params.append('state', state ? 1 : 0);
-      this.axios.post('https://devmohamedgaber-001-site1.atempurl.com/ui/updatePinState.php', params);
+      this.axios.post(this.serverURL + "ui/updatePinState.php", params);
     },
     ConfirmCreatingNewItem() {
       var params = new URLSearchParams();
       params.append('name', this.namevalue);
       params.append('port', this.portvalue);
       params.append('state', this.statevalue ? 1 : 0);
-      this.axios.post('https://devmohamedgaber-001-site1.atempurl.com/ui/addNewEntity.php', params).then(() => {
+      this.axios.post(this.serverURL + "ui/addNewEntity.php", params).then(() => {
         this.UpdateData();
         this.showModal = false;
       });
     },
+    ShowSetTimerForm(port) {
+      console.log("entered");
+      this.showTimerModal = true;
+      this.timerPort = port;
+    },
     DeletePort(portNumber) {
       var params = new URLSearchParams();
       params.append('port', portNumber);
-      this.axios.post('https://devmohamedgaber-001-site1.atempurl.com/ui/deleteport.php', params).then(() => {
+      this.axios.post(this.serverURL + "ui/deleteport.php", params).then(() => {
         this.UpdateData();
       });
       
+    },
+    ScheduleTimer() {
+      var params = new URLSearchParams();
+      params.append('port', this.timerPort);
+      params.append('state', this.timerState ? 1 : 0);
+      params.append('dateTime', this.CalcServerTimeZone());
+      this.axios.post(this.serverURL + "ui/ScheduleTimer.php", params).then((res) => {
+        this.showTimerModal = false;
+        this.timerPort = 0;
+        this.timerState = true;
+        this.timerDate = null;
+        this.timerTime = null;
+      });
+    },
+    CalcServerTimeZone() {
+      let selectedTime = new Date(this.timerDate + " " + this.timerTime);
+      console.log(selectedTime);
+      let convertedTime = new Date(selectedTime).toLocaleString("sv-US", this.timerDateOptions);
+      console.log(convertedTime);
+      return convertedTime.replace(',', '').replaceAll('/', '-');
     }
   },
   beforeUnmount() {
