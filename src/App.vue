@@ -67,7 +67,6 @@
     </n-modal>
     <!-- CAdd Timer Model -->
     <n-modal v-model:show="showTimerModal" block-scroll="false"
-    :mask-closable="false"
       positive-text="Confirm"
       negative-text="Cancel">
       <n-card style="width: 800px" :title="'Add Timer on port ' + timerPort" :bordered="false" size="huge" role="dialog" aria-modal="true">
