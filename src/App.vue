@@ -37,7 +37,7 @@
                   Timer is set to turn 
                   <span v-if="timer.state == 1" class="green">On</span>
                   <span v-else class="red">Off</span>, at {{ timer["executionDate"] }}
-                  <n-button secondary type="warning"> Remove Timer </n-button>
+                  <n-button secondary type="warning" @click="DeleteTimer(timer['id'])"> Remove Timer </n-button>
                 </n-list-item>
               </n-list>
               <n-space>
@@ -69,19 +69,23 @@
     <n-modal v-model:show="showTimerModal" block-scroll="false"
       positive-text="Confirm"
       negative-text="Cancel">
-      <n-card style="width: 800px" :title="'Add Timer on port ' + timerPort" :bordered="false" size="huge" role="dialog" aria-modal="true">
+
+      <n-card style="width: 500px" :title="'Add Timer on port ' + timerPort" :bordered="false" size="huge" role="dialog" aria-modal="true">
         <h4>please select the state of this Port
           <n-switch v-model:value="timerState"/>
         </h4>
-        <n-grid cols="2" responsive="screen" item-responsive>
+        <h5>please Pick date and time</h5>
+        <n-space>
+          <n-date-picker v-model:value="timerTime" value-format="hh:mm:ss" type="datetime" clearable />
+        </n-space>
+        <!--<n-grid cols="2" responsive="screen" item-responsive>
           <n-gi span="2 m:1">
-            <h5>please Pick date and time</h5>
-            <n-time-picker v-model:formatted-value="timerTime" value-format="h:mm:ss"/>
+            <n-time-picker v-model:value="timerTime" value-format="hh:mm:ss a"/>
           </n-gi>
           <n-gi span="2 m:1">
             <n-date-picker panel type="date" value-format="yyyy-MM-dd" v-model:formatted-value="timerDate"/>
           </n-gi>
-        </n-grid>
+        </n-grid>-->
         <n-button type="info" @click="ScheduleTimer">Schedule Timer</n-button>
       </n-card>
     </n-modal>
@@ -109,10 +113,6 @@ export default {
       statevalue: ref(true),
       namevalue: ref(''),
       // timer modal
-      timerDateOptions: ref({ 
-        timeZone: 'America/Los_Angeles',
-        hour12: false,
-      }),
       showTimerModal: ref(false),
       timerPort: ref(0),
       timerState: ref(1),
@@ -188,7 +188,7 @@ export default {
       var params = new URLSearchParams();
       params.append('port', this.timerPort);
       params.append('state', this.timerState ? 1 : 0);
-      params.append('dateTime', this.CalcServerTimeZone());
+      params.append('dateTime', this.timerTime / 1000);
       this.axios.post(this.serverURL + "ui/ScheduleTimer.php", params).then((res) => {
         this.showTimerModal = false;
         this.timerPort = 0;
@@ -197,12 +197,10 @@ export default {
         this.timerTime = null;
       });
     },
-    CalcServerTimeZone() {
-      let selectedTime = new Date(this.timerDate + " " + this.timerTime);
-      console.log(selectedTime);
-      let convertedTime = new Date(selectedTime).toLocaleString("sv-US", this.timerDateOptions);
-      console.log(convertedTime);
-      return convertedTime.replace(',', '').replaceAll('/', '-');
+    DeleteTimer(id) {
+      var params = new URLSearchParams();
+      params.append('id', id);
+      this.axios.post(this.serverURL + "ui/deleteTimer.php", params);
     }
   },
   beforeUnmount() {
