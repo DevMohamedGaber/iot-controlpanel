@@ -32,7 +32,7 @@
                 </n-space>
               </template>
               <n-list v-if="item['timers'].length > 0">
-                <h3>Timers List</h3>
+                <h4>Timers List</h4>
                 <n-list-item v-for="(timer, index) in item['timers']" :key="index">
                   Timer is set to turn 
                   <span v-if="timer.state == 1" class="green">On</span>
@@ -70,23 +70,32 @@
       positive-text="Confirm"
       negative-text="Cancel">
 
-      <n-card style="width: 500px" :title="'Add Timer on port ' + timerPort" :bordered="false" size="huge" role="dialog" aria-modal="true">
-        <h4>please select the state of this Port
+      <n-card style="width: 600px" role="dialog" aria-modal="true" hoverable="true">
+        <h3 class="modalHeader">{{'Add action on port ' + timerPort}}</h3>
+        <h4>please select the state of this Port &nbsp; 
           <n-switch v-model:value="timerState"/>
         </h4>
-        <h5>please Pick date and time</h5>
-        <n-space>
-          <n-date-picker v-model:value="timerTime" value-format="hh:mm:ss" type="datetime" clearable />
-        </n-space>
-        <!--<n-grid cols="2" responsive="screen" item-responsive>
-          <n-gi span="2 m:1">
-            <n-time-picker v-model:value="timerTime" value-format="hh:mm:ss a"/>
-          </n-gi>
-          <n-gi span="2 m:1">
-            <n-date-picker panel type="date" value-format="yyyy-MM-dd" v-model:formatted-value="timerDate"/>
-          </n-gi>
-        </n-grid>-->
-        <n-button type="info" @click="ScheduleTimer">Schedule Timer</n-button>
+        <n-tabs type="card" justify-content="space-evenly">
+
+          <n-tab-pane name="timer" tab="Timer">
+            <n-space justify="space-around">
+              <n-input-number v-model:value="timerHours" clearable min="0" placeholder="Hours" style="width: 150px" />
+              :
+              <n-input-number v-model:value="timerMinuts" clearable min="0" max="59" placeholder="Minuts"  style="width: 150px" />
+              :
+              <n-input-number v-model:value="timerSeconds" clearable min="0" max="59" placeholder="Seconds"  style="width: 150px" />
+            </n-space>
+            <br />
+            <n-button type="info" @click="AddTimer">Schedule Timer</n-button>
+          </n-tab-pane>
+
+          <n-tab-pane name="date" tab="Schadule">
+            <h5>please Pick date and time</h5>
+            <n-date-picker v-model:value="timerTime" value-format="hh:mm:ss" type="datetime" clearable />
+            <br />
+            <n-button type="info" @click="AddSchedule">Schedule Timer</n-button>
+          </n-tab-pane>
+        </n-tabs>
       </n-card>
     </n-modal>
   </div>
@@ -118,6 +127,9 @@ export default {
       timerState: ref(1),
       timerDate: ref(null),
       timerTime: ref(null),
+      timerHours: ref(null),
+      timerMinuts: ref(null),
+      timerSeconds: ref(null)
     };
   },
   mounted() {
@@ -184,11 +196,30 @@ export default {
       });
       
     },
-    ScheduleTimer() {
+    AddSchedule() {
       var params = new URLSearchParams();
       params.append('port', this.timerPort);
       params.append('state', this.timerState ? 1 : 0);
       params.append('dateTime', this.timerTime / 1000);
+      this.axios.post(this.serverURL + "ui/ScheduleTimer.php", params).then((res) => {
+        this.showTimerModal = false;
+        this.timerPort = 0;
+        this.timerState = true;
+        this.timerDate = null;
+        this.timerTime = null;
+      });
+    },
+    AddTimer() {
+      let hours = this.timerHours == null ? 0 : this.timerHours * 3600;
+      let minutes = this.timerMinuts == null ? 0 : this.timerMinuts * 60;
+      let seconds = this.timerSeconds == null ? 0 : this.timerSeconds;
+      let now = new Date();
+      let targetTime = (now / 1000) + hours + minutes + seconds;
+
+      var params = new URLSearchParams();
+      params.append('port', this.timerPort);
+      params.append('state', this.timerState ? 1 : 0);
+      params.append('dateTime', targetTime);
       this.axios.post(this.serverURL + "ui/ScheduleTimer.php", params).then((res) => {
         this.showTimerModal = false;
         this.timerPort = 0;
@@ -209,11 +240,17 @@ export default {
 }
 </script>
 
-<style scoped>
+<style >
 .red {
   color: red;
 }
 .green {
   color: green;
+}
+.modalHeader {
+  margin-top: 0;
+}
+.v-binder-follower-content {
+  top: 10vh !important;
 }
 </style>
