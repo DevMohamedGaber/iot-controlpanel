@@ -37,7 +37,7 @@
                   Timer is set to turn 
                   <span v-if="timer.state == 1" class="green">On</span>
                   <span v-else class="red">Off</span>, at {{ timer["executionDate"] }}
-                  <n-button secondary type="warning" @click="DeleteTimer(timer['id'])"> Remove Timer </n-button>
+                  <n-button secondary type="warning" @click="DeleteTimer(timer['id'])">Remove</n-button>
                 </n-list-item>
               </n-list>
               <n-space>
