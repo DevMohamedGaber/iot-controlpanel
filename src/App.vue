@@ -223,9 +223,9 @@ export default {
       this.axios.post(this.serverURL + "ui/ScheduleTimer.php", params).then((res) => {
         this.showTimerModal = false;
         this.timerPort = 0;
-        this.timerState = true;
-        this.timerDate = null;
-        this.timerTime = null;
+        this.timerHours = null;
+        this.timerMinuts = null;
+        this.timerSeconds = null;
       });
     },
     DeleteTimer(id) {
